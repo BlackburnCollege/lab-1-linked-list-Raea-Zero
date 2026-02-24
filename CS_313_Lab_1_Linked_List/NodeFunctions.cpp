@@ -38,7 +38,7 @@ Node* searchList(Node* head, int searchValue)
 }
 
 //delete ALL nodes containing the value
-void deleteNode(Node* head, int delValue)
+void deleteNode(Node* &head, int delValue)
 {
 	//here on is original code
 	Node* priorNodePtr = NULL;
@@ -47,18 +47,18 @@ void deleteNode(Node* head, int delValue)
 	//repeat until the end of list
 	do
 	{
+		//getPriorNode returns the target node if it is the first item in the list, handle this case
 		priorNodePtr = getPriorNode(head, delValue);
-		
-		if (priorNodePtr != NULL)
+		if (priorNodePtr != NULL && priorNodePtr->value == delValue)
+		{
+			head = priorNodePtr->next;
+			free(priorNodePtr);
+		}
+		else if (priorNodePtr != NULL)
 		{
 			targetNodePtr = priorNodePtr->next;
 			//replace prior node->next with target->next, so that it points at the value after the target
-			if (targetNodePtr != NULL)
-			{
-				//I added this extra check because it crashed and told me it was because this line failed due to targetNodePtr being null
-				priorNodePtr->next = targetNodePtr->next;
-			}
-
+			priorNodePtr->next = targetNodePtr->next;
 			//remove the original node to free memory (destructor?)
 			free(targetNodePtr);
 		}
@@ -95,22 +95,31 @@ void deleteList(Node** head)
 	Node* nextNodePtr = NULL;
 	if (*head == NULL)
 	{
-		free(*head);
+		//originally had a free(head) line here but removed it for the reason explained at the end of the function.
 		return;
 	}
 	else
 	{
+		targetNodePtr = *head;
 		do
 		{
-			targetNodePtr = *head;
+			nextNodePtr = NULL;
 			//save the pointer at the next node if it's not null
-			nextNodePtr = targetNodePtr->next;
+			if (targetNodePtr->next != NULL)
+			{
+				nextNodePtr = targetNodePtr->next;
+			}
 			//free the current node
 			free(targetNodePtr);
 			//repeat
 			targetNodePtr = nextNodePtr;
 		} while (targetNodePtr != NULL);
-		free(*head);
+		//I originally had this line here, thinking that I needed to free the head. However, it keeps breaking, and when I pause the program and check the value, it shows a "node" with
+		//a value of -572662307 and an evidently NULL next. I searched and -572662307 is not in the list, so my best guess is that by this point, head is pointing at nothing and
+		//interpreting whatever's there as junk for the value and pointer. What's concerning to me is the consistency; value is ALWAYS -572662307 and next is ALWAYS 0xddddddddddd...., it never changes like I'd expect junk to.
+		//but it works after I remove this line, so I guess it's fine...? I just hope there's not still a small memory leak.
+
+		//free(head);
 		return;
 	}
 }

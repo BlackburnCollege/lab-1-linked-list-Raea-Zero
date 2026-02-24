@@ -26,6 +26,7 @@ int main()
         }
         readSuccess = createList(fileName, numList);
     }
+    std::cout << "\n";
 
     //Present the menu
     int choice;
@@ -52,11 +53,11 @@ int main()
             resultPtr = searchList(numList, searchValue);
             if (resultPtr == NULL)
             {
-                std::cout << "\nFALSE: I'm sorry, " << searchValue << " is not in the list.\n\n";
+                std::cout << "\n----------\nFALSE: I'm sorry, " << searchValue << " is not in the list.\n----------\n\n";
             }
             else
             {
-                std::cout << "\nTRUE: " << searchValue << " is in the list.\n\n";
+                std::cout << "\n----------\nTRUE: " << searchValue << " is in the list.\n----------\n\n";
             }
         }
         else if (choice == 2)
@@ -67,7 +68,7 @@ int main()
             std::getline(std::cin, strNewValue);
             newValue = std::stoi(strNewValue);
             insertNode(&numList, newValue);
-            std::cout << "\nAdded!\n\n";
+            std::cout << "\n----------\nAdded!\n----------\n\n";
         }
         else if (choice == 3)
         {
@@ -77,12 +78,12 @@ int main()
             std::getline(std::cin, strRemoveValue);
             removeValue = std::stoi(strRemoveValue);
             deleteNode(numList, removeValue);
-            std::cout << "\nAll instances of " << removeValue << " removed from the list.\n\n";
+            std::cout << "\n----------\nAll instances of " << removeValue << " removed from the list.\n----------\n\n";
         }
         else
         {
             deleteList(&numList);
-            std::cout << "\nList deleted, memory cleared. Have a nice day!";
+            std::cout << "\n----------\nList deleted, memory cleared. Have a nice day!\n----------\n\n";
         }
     } while (choice != 4);
 }
